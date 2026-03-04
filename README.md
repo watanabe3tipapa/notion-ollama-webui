@@ -35,7 +35,7 @@ http://localhost:8000
 
 ## 詳細ドキュメント
 
-- [USAGE.html](https://watanabe3tipapa.github.io/notion-ollama-webui/docs/USAGE.html) - 詳しい使い方
+- [GitHub pages](https://watanabe3tipapa.github.io/notion-ollama-webui/USAGE.html) - 詳しい使い方
 
 ## 必要な環境
 
