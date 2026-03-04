@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notion + Ollama Web UI</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Notion + Ollama Web UI</h1>
+    
+    <form id="askForm">
+      <div class="form-group">
+        <label for="page_id">Notion ページID</label>
+        <input type="text" id="page_id" name="page_id" placeholder="abc123def456..." required>
+      </div>
+      
+      <div class="form-group">
+        <label for="prompt">プロンプト</label>
+        <select id="prompt" name="prompt">
+          <option value="このテキストを3行で要約して">要約</option>
+          <option value="このテキストを英語に翻訳して">英語に翻訳</option>
+          <option value="このテキストのキーワードを抽出して">キーワード抽出</option>
+          <option value="このテキストについて質問あるので回答して">Q&A</option>
+        </select>
+      </div>
+      
+      <button type="submit">実行</button>
+    </form>
+    
+    <div id="result" class="result" style="display: none;">
+      <h2>結果</h2>
+      <pre id="resultText"></pre>
+    </div>
+    
+    <div id="error" class="error" style="display: none;"></div>
+  </div>
+  
+  <script>
+    document.getElementById('askForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const resultDiv = document.getElementById('result');
+      const errorDiv = document.getElementById('error');
+      const resultText = document.getElementById('resultText');
+      
+      resultDiv.style.display = 'none';
+      errorDiv.style.display = 'none';
+      
+      try {
+        const response = await fetch('/ask', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          errorDiv.textContent = data.error;
+          errorDiv.style.display = 'block';
+        } else {
+          resultText.textContent = data.result;
+          resultDiv.style.display = 'block';
+        }
+      } catch (err) {
+        errorDiv.textContent = '通信エラーが発生しました';
+        errorDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

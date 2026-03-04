@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notion + Ollama Web UI 使用方法</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Notion + Ollama Web UI 使用方法</h1>
+
+    <section>
+      <h2>準備</h2>
+      
+      <h3>1. Notion APIキー取得</h3>
+      <ol>
+        <li><a href="https://www.notion.so/developers" target="_blank">notion.so/developers</a> にアクセス</li>
+        <li>「New integration」をクリック</li>
+        <li>名前を入力（例: <code>notion-ollama-webui</code>）</li>
+        <li>「Capabilities」で Full Access を選択</li>
+        <li>保存後、Secretキーをコピー</li>
+      </ol>
+
+      <h3>2. 環境変数設定</h3>
+      <pre><code>cp .env.example .env</code></pre>
+      <p><code>.env</code>ファイルを編集：</p>
+      <pre><code>NOTION_API_KEY=secret_xxxxx（取得したAPIキー）</code></pre>
+    </section>
+
+    <section>
+      <h2>実行</h2>
+      
+      <h3>1. 依存関係をインストール</h3>
+      <pre><code>uv sync</code></pre>
+
+      <h3>2. サーバーを起動</h3>
+      <pre><code>uv run uvicorn main:app --reload</code></pre>
+
+      <h3>3. ブラウザで開く</h3>
+      <pre><code>http://localhost:8000</code></pre>
+    </section>
+
+    <section>
+      <h2>使い方</h2>
+      <ol>
+        <li><strong>Notion ページID</strong> を入力<br>例: <code>https://notion.so/page-name-abc123def456</code> → <code>abc123def456</code></li>
+        <li><strong>プロンプト</strong> を選択
+          <ul>
+            <li>要約</li>
+            <li>英語に翻訳</li>
+            <li>キーワード抽出</li>
+            <li>Q&A</li>
+          </ul>
+        </li>
+        <li>「実行」ボタンをクリック</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>カスタマイズ</h2>
+      
+      <h3>モデル変更</h3>
+      <p><code>main.py</code> のこの部分：</p>
+      <pre><code>response = chat('llama3.2', messages=[...])</code></pre>
+      <p><code>llama3.2</code> を他のモデル名に置換</p>
+
+      <h3>プロンプト追加</h3>
+      <p><code>templates/index.html</code> の <code>&lt;select&gt;</code> タグに选项を追加</p>
+    </section>
+
+    <section>
+      <h2>他のマシンへ移植する場合</h2>
+
+      <h3>準備（現在のパソコンで）</h3>
+      <p>テスト成功後、以下のコマンドで依存関係を固定：</p>
+      <pre><code>uv sync</code></pre>
+      <p>これにより <code>uv.lock</code> が更新され、相手の環境で同じバージョンが使われる</p>
+
+      <h3>移植手順（相手のマシンで）</h3>
+      <ol>
+        <li>プロジェクトフォルダを丸ごとコピー</li>
+        <li>ターミナルでフォルダに移動</li>
+        <li>以下を実行：<pre><code>uv sync</code></pre></li>
+        <li><code>.env</code> ファイルを作成し、APIキーを設定</li>
+      </ol>
+
+      <h3>必要な環境</h3>
+      <ul>
+        <li>Python 3.13+</li>
+        <li>uv</li>
+        <li>Ollama（ローカルで起動中）</li>
+        <li>Notion APIキー</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Ollamaのセットアップ</h2>
+
+      <h3>1. Ollamaをインストール</h3>
+      <pre><code>curl -fsSL https://ollama.com/install.sh | sh</code></pre>
+
+      <h3>2. Ollamaを起動</h3>
+      <pre><code>ollama serve</code></pre>
+
+      <h3>3. モデルをダウンロード</h3>
+      <pre><code>ollama pull llama3.2</code></pre>
+
+      <h3>4. 確認</h3>
+      <pre><code>ollama list</code></pre>
+    </section>
+
+    <section>
+      <h2>トラブルシューティング</h2>
+
+      <h3>Ollamaが起動しない</h3>
+      <pre><code># ポート11434が使用中か確認
+lsof -i :11434</code></pre>
+
+      <h3>サーバーが起動しない</h3>
+      <pre><code># ポート8000が使用中か確認
+lsof -i :8000</code></pre>
+    </section>
+
+    <div class="back-link">
+      <a href="https://github.com/watanabe3tipapa/notion-ollama-webui">
+        <svg height="20" viewBox="0 0 16 16" version="1.1" width="20" aria-hidden="true">
+          <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        リポジトリに戻る
+      </a>
+    </div>
+  </div>
+</body>
+</html>

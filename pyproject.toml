@@ -1,0 +1,7 @@
+[project]
+name = "notion-ollama-webui"
+version = "0.1.0"
+description = "Notion + Ollama Web UI"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["fastapi", "uvicorn", "jinja2", "python-dotenv", "requests", "ollama"]
