@@ -59,7 +59,7 @@ response = chat('llama3.2', messages=[...])
 `llama3.2` を他のモデル名に置換
 
 ### プロンプト追加
-`templates/index.html` の `<select>` タグに选项を追加
+`templates/index.html` の `<select>` タグに項目を追加
 
 ## 他のマシンへ移植する場合
 
